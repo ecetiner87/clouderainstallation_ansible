@@ -130,8 +130,9 @@ ansible-playbook mysql_secure_installation.yml –extra-vars "mysql_root_passwor
 ```
 **Effected Hosts:** dbserver
 
-**createdb.yml**
+**createdbfinal.yml**
 Before installation of cloudera packages; some configuration DBs for cloudera components should be created with relevant user on dbserver -where mysql installed and configured-
+**Note:** Please update **my.cnf.j2** file under templates directory before executing **install_cloudera.sh** script.
 
     • Give all privileges on all dbs to root user
     • Change password validation to easy way 
