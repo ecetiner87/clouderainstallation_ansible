@@ -1,0 +1,15 @@
+List of Templates Dir:
+
+        ◦ CDH.5.14/ - folder
+        ◦ clouderainstall/ - folder
+        ◦ createrepoRPMs/ -folder
+        ◦ hosts.j2 -should be updated with relevant info-
+        ◦ jdk-8u131-linux-x64.rpm
+        ◦ KAFKA/ - folder
+        ◦ my.cnf.j2 
+        ◦ mysql5.7/ - folder
+        ◦ ntp.conf
+        ◦ redis-3.0.0-tar.gz
+        ◦ redis.conf.j2
+        ◦ redis_init.script.j2
+        ◦ RPMs/ - folder 
