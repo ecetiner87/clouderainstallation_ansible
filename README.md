@@ -23,7 +23,7 @@ Cloudera Manager is an end-to-end application for managing CDH clusters. Clouder
 
 ### Prerequisites
 
-* All target hosts which will create cloudera cluster should be installed with Centos 7.x OS with Infrastructure Manager    installation.
+* All target hosts which will create cloudera cluster should be installed with **Centos 7.x OS** with **Infrastructure Manager**    installation.
 
 * Ansible Control Machine -ansible host- should be installed on your local PC/Laptop.
 
@@ -59,7 +59,7 @@ Cloudera Manager is an end-to-end application for managing CDH clusters. Clouder
          
 * You should copy **“install_cloudera.sh”** script on your local PC and give **execution** permission. 
         
-**Important Note:** Since customers request offline installation -no available internet connection- it is not possible to use yum module with online registration in ansible playbooks. Thus, if you have hosts with Centos minimal installation or if you think there are missing packages; you should include them with their dependencies under /etc/ansible/templates/RPMs folder also. 
+**Important Note:** Since customers request offline installation -no available internet connection- it is not possible to use yum module with online registration in ansible playbooks. Thus, if you have hosts with Centos minimal installation or if you think there are missing packages; you should include them with their dependencies under **/etc/ansible/templates/RPMs** folder also. 
 
 ### Execution of Application
 
@@ -67,16 +67,17 @@ Cloudera Manager is an end-to-end application for managing CDH clusters. Clouder
 
 **Main.yml**
 This playbook covers all necessary preconfiguration tasks before cloudera installation on related hosts. Following items are covered:
-    • Update /etc/hosts 
-    • Set Enforcing to 0
-    • Disable SELINUX 
-    • Stop Firewalld 
-    • Disable Firewall 
-    • Update /etc/sysctl.conf, /sys/kernel/mm/transparent_hugepage/defrag and /etc/local.rc files with cloudera configs 
-    • Install NTP and all related RPMs 
-    • Set Timezone 
-    • Configure NTP on all clients 
-    • Remove Existing Java Installation if exists and Install JDK1.8 and select it as default with alternatives. 
+
+            • Update /etc/hosts 
+            • Set Enforcing to 0
+            • Disable SELINUX 
+            • Stop Firewalld 
+            • Disable Firewall 
+            • Update /etc/sysctl.conf, /sys/kernel/mm/transparent_hugepage/defrag and /etc/local.rc files with cloudera configs 
+            • Install NTP and all related RPMs 
+            • Set Timezone 
+            • Configure NTP on all clients 
+            • Remove Existing Java Installation if exists and Install JDK1.8 and select it as default with alternatives. 
 ```
 ansible-playbook main.yml --extra-vars "ntp_IP=192.168.4.234" (ntp_IP variable should be passed with desired NTP source)
 ```
@@ -91,6 +92,7 @@ ansible-playbook reboot.yml
 
 **redisinstall.yml**
 redisinstall.yml playbook covers following items:
+
     • Copy redis3.0 tarball to target hosts
     • Untar related tar.gz
     • Install redis3.0
@@ -105,6 +107,7 @@ ansible-playbook redisinstall.yml
 
 **mysqlinstall.yml**
 mysqlinstall.yml playbook covers following items:
+
     • Remove any previously installed mysql/mariadb/postfix packages
     • Copy all necessary rpms to target hosts
     • Install related mysql rpms
@@ -116,6 +119,7 @@ ansible-playbook mysqlinstall.yml
 
 **mysq_secure_installation.yml**
 With mysql5.7, it is required to run **mysqlsecureinstallation.sh** to configure mysql deamon and related root privileges. This playbook covers related items just like mysqlsecureinstallation.sh
+
     • Get temporary root password from /var/log/mysqld.log
     • Set the new mysql root password with given parameter -mysql_root_password-
     • Delete anonymous users from mysql
@@ -128,6 +132,7 @@ ansible-playbook mysql_secure_installation.yml –extra-vars "mysql_root_passwor
 
 **createdb.yml**
 Before installation of cloudera packages; some configuration DBs for cloudera components should be created with relevant user on dbserver -where mysql installed and configured-
+
     • Give all privileges on all dbs to root user
     • Change password validation to easy way 
     • Disable validate plugin
@@ -148,6 +153,7 @@ ansible-playbook createdb.yml --extra-vars "mysql_root_password=password" (mysql
  
 **mysqlconnector.yml**
 Mysql-connector-java is needed plugin for cloudera installation and should be present on dbserver. This playbook includes following actions:
+
     • Check if mysql-connector-java.jar is present on dbserver
     • If not; copy related file to /usr/share/mysql-java directory
     • Move related file under /usr/share/java and rename it.
@@ -158,6 +164,7 @@ ansible-playbook mysqlconnector.yml
 
 **clouderaconfig.yml**
 This playbook used for final configurations such as local repo creation, web server config and cloudera rpms distribution on cloudera hosts.
+
     • Copy all cloudera rpms to /home/clouderainstall folder of target hosts.
     • Copy createrepo rpms and its dependencies.
     • Install createrepo on target hosts
@@ -170,6 +177,7 @@ ansible-playbook clouderaconfig.yml
 
 **clouderaserverinstall.yml**
 Final playbook which used for cloudera manager installaton on cloudera-manager host.
+
     • Install CM packages by using local CM repo
     • Prepare Database with scm_prepare_database.sh via shell module.
     • Create related directories for CDH and KAFKA on local webserver.
