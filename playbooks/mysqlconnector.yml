@@ -1,0 +1,27 @@
+---
+- name: Server Configuration Before Cloudera Installation
+  hosts: dbserver
+
+  tasks:
+
+    - name: Check if MySQL connector present
+      file:
+         path: "/usr/share/mysql-java/mysql-connector-java-5.1.35-bin.jar"
+         state: absent
+
+    - name: Create MySQL Java Downlaod director
+      file:
+         path:  "/usr/share/mysql-java/"
+         state: directory
+
+    - name: Ensure /usr/share/java/ exists
+      file:
+        dest: /usr/share/java/
+        state: directory
+        mode: 0775
+
+    - name: Cp jar file to db hosts
+      copy: src=files/mysql-connector-java-5.1.35-bin.jar dest=/usr/share/mysql-java
+
+    - name: Move jar
+      shell: mv /usr/share/mysql-java/mysql-connector-java-5.1.35-bin.jar /usr/share/java/mysql-connector-java.jar

@@ -1,0 +1,48 @@
+---
+- name: Cloudera Manager Installation - Creation of Local Repos on nodes
+  hosts: cloudera-hosts
+
+  tasks:
+
+    - name: Copy All Necessary RPMs to Target Hosts /home/clouderainstall folder
+      copy: src={{ item.src }} dest={{ item.dest }}
+      with_items:
+        - { src: '/etc/ansible/templates/clouderainstall', dest: '/home/' }
+
+    - name: Copy All Necessary RPMs for Createrepo RPM installation
+      copy: src={{ item.src }} dest={{ item.dest }}
+      with_items:
+        - { src: '/etc/ansible/templates/createrepoRPMs', dest: '/tmp/' }
+
+    - name: Finding RPM files for CreateRepo installation
+      find:
+        paths: "/tmp/createrepoRPMs"
+        patterns: "*.rpm"
+      register: rpm_result
+
+    # Create a list of the rpms to use with the yum install command
+    - set_fact:
+        rpm_list: "{{ rpm_result.files | map(attribute='path') | list}}"
+
+    # Use yum to install with a list
+    - name: install createrepo rpm and its dependencies using rpm_list
+      yum:
+        name: "{{rpm_list}}"
+        state: present
+
+    - name: Add CM local repository
+      yum_repository:
+        name: cloudera-cm5.14.0-local
+        description: CM Repo
+        baseurl: "file:///home/clouderainstall"
+        enabled: yes
+        gpgcheck: no
+        
+    - name: Create local repo for cm
+      shell: |
+        yum clean all
+        cd /home/clouderainstall
+        createrepo .
+      args:
+        warn: false
+

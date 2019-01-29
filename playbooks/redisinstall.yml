@@ -1,0 +1,42 @@
+---
+- name: Redis Installation and Configuration
+  hosts: testserver
+  vars:
+   redis_version: 3.0.0
+
+  tasks:
+    
+    - name: Copy Latest Redis Tarball to Destination  /tmp/ folder
+      copy: src={{ item.src }} dest={{ item.dest }}
+      with_items:
+        - { src: '/etc/ansible/templates/redis-{{redis_version}}.tar.gz', dest: '/tmp/' }
+    
+    - name: Untar Redis Tarball
+      command: chdir=/tmp creates=redis-{{redis_version}} tar -xzf redis-{{redis_version}}.tar.gz
+      args:
+        warn: false
+
+    - name: install redis
+      shell: make chdir=/tmp/redis-{{redis_version}} creates=/tmp/redis-{{redis_version}}/src/redis-server
+  
+    - name: move compiled redis binaries
+      shell: cp -f {{item}} /usr/local/bin chdir=/tmp/redis-{{redis_version}}/src
+      with_items:
+      - redis-cli
+      - redis-server
+      - redis-benchmark
+ 
+    - name: configure redis-server
+      template: src=redis.conf.j2 dest=/etc/redis.conf owner=root group=root mode=0644
+      notify:
+              - restart Redis
+
+    - name: make redis a service
+      template: src=redis_init_script.j2 dest=/etc/init.d/redis owner=root group=root mode=755
+  
+    - name: run redis
+      shell: /etc/init.d/redis start creates=/var/run/redis.pid
+
+  handlers:
+    - name: restart Redis
+      shell: /etc/init.d/redis stop && /etc/init.d/redis start

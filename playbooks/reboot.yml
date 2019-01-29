@@ -1,0 +1,13 @@
+---
+# reboot.yml
+
+- hosts: npm
+
+  tasks:
+          - name: Restart server
+            command: /sbin/shutdown -r +1
+            async: 0
+            poll: 0
+            ignore_errors: true
+            args:
+              warn: false # set warn=false to prevent warning

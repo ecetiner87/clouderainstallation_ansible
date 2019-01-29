@@ -1,0 +1,106 @@
+---
+- name: Server Configuration Before Cloudera Installation
+  hosts: cloudera-hosts
+
+  tasks:
+
+    - name: /etc/hosts update on all hosts
+      action: template src=templates/hosts.j2 dest=/etc/hosts
+
+    - name: Disable SELinux 
+      selinux:
+         state: disabled
+
+    - name: Set SELinux in permissive mode until the machine is rebooted
+      command: setenforce 0
+      ignore_errors: true
+      changed_when: false
+
+    - name: Stop service firewalld, if started
+      service:
+        name: firewalld
+        state: stopped
+
+    - name: Disable service firewalld, and not touch the state
+      service:
+        name: firewalld
+        enabled: no
+
+    - name: Update sysctl.conf file
+      shell: grep -q -F 'vm.swappiness=0' /etc/sysctl.conf || echo 'vm.swappiness=0' >> /etc/sysctl.conf 
+
+    - name: Update kernel configs
+      shell: grep -q -F '[never]' /sys/kernel/mm/transparent_hugepage/defrag || echo never >> /sys/kernel/mm/transparent_hugepage/defrag
+
+    - name: Update /etc/rc.local
+      shell: printf "echo 'vm.swappiness=0' >> /etc/sysctl.conf\necho never > /sys/kernel/mm/transparent_hugepage/defrag\n" >> /etc/rc.local
+
+    - name: Copy All Necessary RPMs to Target Hosts /tmp/RPMs folder
+      copy: src={{ item.src }} dest={{ item.dest }}
+      with_items:
+        - { src: '/etc/ansible/templates/RPMs', dest: '/tmp/' }
+    
+    - name: Finding RPM files for NTP installation
+      find:
+        paths: "/tmp/RPMs"
+        patterns: "*.rpm"
+      register: rpm_result
+
+    # Create a list of the rpms to use with the yum install command
+    - set_fact:
+        rpm_list: "{{ rpm_result.files | map(attribute='path') | list}}"
+
+    # Use yum to install with a list
+    - name: install rpm files using rpm_list
+      yum:
+        name: "{{rpm_list}}"
+        state: present
+
+    - name: set timezone
+      shell: timedatectl set-timezone Europe/Istanbul
+
+    - name: Copy over the NTP configuration
+      template: src=./templates/ntp.conf dest=/etc/ntp.conf
+      notify:
+      - restart ntpd
+      tags: ntp
+
+    - name: Make sure NTP is stopped
+      service: name=ntpd state=stopped enabled=yes
+      tags: ntp
+
+    - name: Sync time initially
+      shell: ntpdate {{ ntp_IP }}
+      tags: ntp
+
+    - name: Make sure NTP is started up
+      service: name=ntpd state=started enabled=yes
+      tags: ntp
+
+    - name: Sync hwclock
+      shell: hwclock -w
+      tags: ntp
+  
+    - name: Copy JAVA JDK8 to destination
+      copy: src={{ item.src }} dest={{ item.dest }}
+      with_items:
+        - { src: '/etc/ansible/templates/jdk-8u131-linux-x64.rpm', dest: '/tmp/jdk-8u131-linux-x64.rpm' }
+
+    # Use yum to install with a list
+    - name: install JAVA8 JDK
+      yum:
+        name: /tmp/jdk-8u131-linux-x64.rpm
+        state: present
+
+    - name: Make Java available for system
+      command: 'alternatives --install "/usr/bin/java" "java" "/usr/java/jdk1.8.0_131/bin/java" 2000'
+ 
+    - name: Remove old java from available list
+      shell: alternatives --remove "java" /usr/lib/jvm/java-1.7.0-openjdk*/jre/bin/java
+    
+    - name: Remove old java8 from available list
+      shell: alternatives --remove "java" /usr/lib/jvm/java-1.8.0-openjdk*/jre/bin/java
+
+  handlers:
+    - name: restart ntpd
+      service: name=ntpd state=restarted

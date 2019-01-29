@@ -1,0 +1,23 @@
+- name: Mysql Secure Installation
+  hosts: "{{ variable_host | default('dbserver')}}"
+
+  tasks:
+
+   - name: Get temporary MySQL root password
+     shell: grep 'temporary password' /var/log/mysqld.log | awk '{print $NF}'
+     register: mysql_root_temp_password
+
+   - name: Set the MySQL root password
+     shell: mysqladmin -u root --password="{{ mysql_root_temp_password.stdout }}" password "{{ mysql_root_password }}"
+     register: mysql_admin_root_password_result
+     failed_when: "'(using password: NO)' in mysql_admin_root_password_result.stderr"
+
+
+   - name: delete anonymous MySQL server users
+     mysql_user: login_user=root login_password="{{ mysql_root_password }}" user="" host_all=yes state=absent 
+
+   - name: remove the MySQL test database
+     mysql_db: login_user=root login_password="{{ mysql_root_password }}" db=test state=absent
+
+   - name: Start MySQL Server and enable it
+     service: name=mysqld state=started enabled=yes

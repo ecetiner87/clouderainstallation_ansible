@@ -1,0 +1,47 @@
+---
+- name: Install MYSQL5.7
+  hosts: "{{ variable_host | default('dbserver')}}" 
+
+  tasks:
+
+    - name: Remove any rpm related to mysql
+      command: 'rpm -e --nodeps mariadb' 
+      ignore_errors: true
+      args:
+        warn: false
+
+    - name: Remove any rpm related to mariadb
+      command: 'rpm -e --nodeps mariadb-libs'
+      ignore_errors: true
+      args:
+        warn: false
+
+    - name: Remove any rpm related to postfix
+      command: 'rpm -e --nodeps postfix'
+      ignore_errors: true
+      args:
+        warn: false
+
+    - name: Copy All Necessary RPMs to Target Hosts /tmp/mysql folder
+      copy: src={{ item.src }} dest={{ item.dest }}
+      with_items:
+        - { src: '/etc/ansible/templates/mysql5.7/', dest: '/tmp/mysql' }
+
+    - name: Finding RPM files for Mysql installation
+      find:
+        paths: "/tmp/mysql"
+        patterns: "*.rpm"
+      register: rpm_result
+
+    # Create a list of the rpms to use with the yum install command
+    - set_fact:
+        rpm_list: "{{ rpm_result.files | map(attribute='path') | list}}"
+
+    # Use yum to install with a list
+    - name: install rpm files using rpm_list
+      yum:
+        name: "{{rpm_list}}"
+        state: present
+
+    - name: Start MySQL Server and enable it
+      service: name=mysqld state=started enabled=yes

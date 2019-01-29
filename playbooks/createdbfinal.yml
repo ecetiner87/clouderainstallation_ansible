@@ -1,0 +1,151 @@
+---
+- name: Create Config DBs for Cloudera Components
+  hosts: dbserver
+
+  tasks:
+
+    - name: store mysql root password
+      copy: src=templates/my.cnf.j2 dest=/root/.my.cnf
+
+    - name: Grant ALL priviliges to root user
+      mysql_user: login_user=root login_password="{{ mysql_root_password }}" name=root priv=*.*:ALL,GRANT state=present
+
+    - name: Create a new database with name 'amon'
+      mysql_db:
+         name: amon
+         state: present
+         encoding: utf8
+
+    - name: Create a new database with name 'rman'
+      mysql_db:
+         name: rman
+         state: present
+         encoding: utf8
+
+    - name: Create a new database with name 'metastore'
+      mysql_db:
+         name: metastore
+         state: present
+         encoding: utf8
+
+    - name: Create a new database with name 'sentry'
+      mysql_db:
+         name: sentry
+         state: present
+         encoding: utf8
+
+    - name: Create a new database with name 'nav'
+      mysql_db:
+         name: nav
+         state: present
+         encoding: utf8
+
+    - name: Create a new database with name 'navms'
+      mysql_db:
+         name: navms
+         state: present
+         encoding: utf8
+
+    - name: Create a new database with name 'oozie'
+      mysql_db:
+         name: oozie
+         state: present
+         encoding: utf8
+
+    - name: Create a new database with name 'hue'
+      mysql_db:
+          name: hue
+          state: present
+          encoding: utf8
+
+    - name: Create a new database with name 'scm'
+      mysql_db:
+          name: scm
+          state: present
+          encoding: utf8
+
+    - name: change password validation to the easy way
+      shell: mysql -u root -p'{{ mysql_root_password }}' --connect-expired-password -e "SET GLOBAL validate_password_length=2;"
+
+    - name: change password validation to the easy way
+      shell: mysql -u root -p'{{ mysql_root_password }}' --connect-expired-password -e "SET GLOBAL validate_password_policy=LOW;"
+
+    - name: Disable validate plugin
+      shell:  mysql -u root -p'{{ mysql_root_password }}' --connect-expired-password -e "uninstall plugin validate_password;"
+
+    - name: Grant  priviliges to amon user
+      mysql_user: name=amon password=amon priv=amon.*:ALL,GRANT state=present
+
+    - name: Grant  priviliges to rman user
+      mysql_user: name=rman password=rman priv=rman.*:ALL,GRANT state=present
+
+    - name: Grant  priviliges to metastore user
+      mysql_user: name=metastore password=metastore priv=metastore.*:ALL,GRANT state=present
+
+    - name: Grant  priviliges to sentry user
+      mysql_user: name=sentry password=sentry priv=sentry.*:ALL,GRANT state=present
+
+    - name: Grant  priviliges to nav user
+      mysql_user: name=nav password=nav priv=nav.*:ALL,GRANT state=present
+
+    - name: Grant priviliges to navms user
+      mysql_user: name=navms password=navms priv=navms.*:ALL,GRANT state=present
+
+    - name: Grant priviliges to oozie user
+      mysql_user: name=oozie password=oozie priv=oozie.*:ALL,GRANT state=present
+
+    - name: Grant  priviliges to hue user
+      mysql_user: name=hue password=hue priv=hue.*:ALL,GRANT state=present
+
+    - name: Grant priviliges to scm user
+      mysql_user: name=scm password=scm  priv=scm.*:ALL,GRANT state=present
+
+    - name: Flush all privileges
+      command:
+        mysql --user=root --password="{{ mysql_root_password }}" mysql
+        --execute="grant all on *.* TO 'root'@'%' IDENTIFIED BY '{{mysql_root_password}}' WITH GRANT OPTION"
+
+    - name: Flush all privileges for amon
+      command:
+        mysql --user=root --password="{{ mysql_root_password }}" mysql
+        --execute="grant all on amon.* TO 'amon'@'%' IDENTIFIED BY 'amon'"
+
+    - name: Flush all privileges for rman
+      command:
+        mysql --user=root --password="{{ mysql_root_password }}" mysql
+        --execute="grant all on rman.* TO 'rman'@'%' IDENTIFIED BY 'rman'"
+
+    - name: Flush all privileges for metastore
+      command:
+        mysql --user=root --password="{{ mysql_root_password }}" mysql
+        --execute="grant all on metastore.* TO 'metastore'@'%' IDENTIFIED BY 'metastore'"
+
+    - name: Flush all privileges for sentry
+      command:
+        mysql --user=root --password="{{ mysql_root_password }}" mysql
+        --execute="grant all on sentry.* TO 'sentry'@'%' IDENTIFIED BY 'sentry'"
+
+    - name: Flush all privileges for nav
+      command:
+        mysql --user=root --password="{{ mysql_root_password }}" mysql
+        --execute="grant all on nav.* TO 'nav'@'%' IDENTIFIED BY 'nav'"
+
+    - name: Flush all privileges for navms
+      command:
+        mysql --user=root --password="{{ mysql_root_password }}" mysql
+        --execute="grant all on navms.* TO 'navms'@'%' IDENTIFIED BY 'navms'"
+
+    - name: Flush all privileges for oozie
+      command:
+        mysql --user=root --password="{{ mysql_root_password }}" mysql
+        --execute="grant all on oozie.* TO 'oozie'@'%' IDENTIFIED BY 'oozie'"
+
+    - name: Flush all privileges for hue
+      command:
+        mysql --user=root --password="{{ mysql_root_password }}" mysql
+        --execute="grant all on hue.* TO 'hue'@'%' IDENTIFIED BY 'hue'"
+
+    - name: Flush all privileges for scm
+      command:
+        mysql --user=root --password="{{ mysql_root_password }}" mysql
+        --execute="grant all on scm.* TO 'scm'@'%' IDENTIFIED BY 'scm'"

@@ -1,0 +1,47 @@
+- name: Cloudera Manager Installation on Server Node
+  hosts: cloudera-manager
+
+  tasks:
+
+    - name: Install CM packages from local CM repo
+      yum:
+        name:
+           - cloudera-manager-daemons
+           - cloudera-manager-server
+        enablerepo: cloudera-cm5.14.0-local
+        state: present
+
+    - name: Prepare Database
+      shell: |
+        cd /usr/share/cmf/schema
+        ./scm_prepare_database.sh mysql scm scm scm 
+
+    - name: Create directories for CDH and KAFKA on webserver
+      shell: |
+        cd /var/www/html
+        mkdir CDH.5.14
+        mkdir KAFKA
+
+    - name: Copy All Necessary items to CDH.5.14 folder
+      copy: src={{ item.src }} dest={{ item.dest }}
+      with_items:
+        - { src: '/etc/ansible/templates/CDH.5.14', dest: '/var/www/html/CDH.5.14' }
+
+    - name: Copy All Necessary items to KAFKA folder
+      copy: src={{ item.src }} dest={{ item.dest }}
+      with_items:
+        - { src: '/etc/ansible/templates/KAFKA', dest: '/var/www/html/KAFKA' }
+
+    - name: Create directories for datanodes
+      shell: |
+        cd /var/www/html/CDH.5.14
+        createrepo .
+        cd /var/www/html/KAFKA
+        createrepo .
+
+    - name: Make sure Apache is started up
+      service: name=httpd state=started enabled=yes
+
+    - name: Start Cloudera Server
+      shell: service cloudera-scm-server start
+
