@@ -1,0 +1,7 @@
+CDH5.14 packages
+
+cloudera-manager-agent-5.14.3-1.cm5143.p0.4.el7.x86_64
+cloudera-manager-daemons-5.14.3-1.cm5143.p0.4.el7.x86_64
+cloudera-manager-server-5.14.3-1.cm5143.p0.4.el7.x86_64
+cloudera-manager-server-db-2-5.14.3-1.cm5143.p0.4.el7.x86_64
+enterprise-debuginfo-5.14.3-1.cm5143.p0.4.el7.x86_64
