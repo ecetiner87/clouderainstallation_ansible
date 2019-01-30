@@ -39,14 +39,14 @@ Cloudera Manager is an end-to-end application for managing CDH clusters. Clouder
 
 * You should copy all **“templates”** directory content to your local **/etc/ansible/templates** directory.
 
-        ◦ CDH.5.14/ - folder
+        ◦ CDH.5.14/ - folder - please check directions in txt files 
         ◦ clouderainstall/ - folder
         ◦ createrepoRPMs/ -folder
         ◦ hosts.j2 -should be updated with relevant info-
-        ◦ jdk-8u131-linux-x64.rpm
-        ◦ KAFKA/ - folder
+        ◦ jdk-8u131-linux-x64.rpm -- you can download online
+        ◦ KAFKA/ - folder- please check directions in txt files
         ◦ my.cnf.j2 
-        ◦ mysql5.7/ - folder
+        ◦ mysql5.7/ - you can download all packages online and put related mysql folder into /etc/ansible/templates folder
         ◦ ntp.conf
         ◦ redis-3.0.0-tar.gz
         ◦ redis.conf.j2
