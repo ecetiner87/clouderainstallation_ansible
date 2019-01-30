@@ -34,7 +34,7 @@ Cloudera Manager is an end-to-end application for managing CDH clusters. Clouder
             ▪ cloudera-hosts: Hosts where cloudera-client packages will be installed.
             
        
-![alt text](https://github.com/ecetiner87/clouderainstallation_ansible/blob/master/snapshots/1.png)
+     ![alt text](https://github.com/ecetiner87/clouderainstallation_ansible/blob/master/snapshots/1.png)
 
 * You should ssh each host once with defined ansible_user(which is root in our case) in your hosts file to create **ssh key** between ansible control machine and related ansible targets. You can also try **ssh key-gen** for each target.
 
@@ -201,28 +201,44 @@ ansible-playbook clouderaserverinstall.yml
 ```
 $ ./install_cloudera.sh | tee “install_cloudera.log”
 ```
+
+   ![alt text](https://github.com/ecetiner87/clouderainstallation_ansible/blob/master/snapshots/3.png)
+
 2) After script execution finished; check the related log file too see if you have any error. Some errors and warnings have “ignoring...” tag; you can skip them.
 
 3) If you haven’t any error in log file (other than “ignoring” ones) you should login cloudera manager from GUI successfully with URL https://cloudera-managerIP:7180
 
+  ![alt text](https://github.com/ecetiner87/clouderainstallation_ansible/blob/master/snapshots/Screenshot%20from%202018-11-20%2011-15-23.png)
+
+
 4) Login with admin/admin user/pass configuration
 
 5) Continue with express-wizard and verify that Cloudera Manager find all nodes that you supply in your /etc/hosts file.
+  
+  ![alt text](https://github.com/ecetiner87/clouderainstallation_ansible/blob/master/snapshots/Screenshot%20from%202018-11-20%2011-16-28.png)
+
 
 6) Enter local repo URLs to Cloudera Manager as Repository to point your own parcel files that you created via ansible.
-        ◦ For CDH: IP/CDH.5.14/CDH.5.14
-        ◦ For KAFKA: IP/KAFKA/KAFKA
+        ◦ For CDH: REPO_IP/CDH.5.14/CDH.5.14
+        ◦ For KAFKA: REPO_IP/KAFKA/KAFKA
         
 7) Install Agents and verify all nodes installed successfully.
+
+  ![alt text](https://github.com/ecetiner87/clouderainstallation_ansible/blob/master/snapshots/Screenshot%20from%202018-11-20%2011-23-41.png)
 
 8) Setup Databases for hive/oozie/hue as following:
         ◦ Database Type: MySQL; 
         ◦ Database Name/User: hue/oozie/hue     hue/oozie/hue 
         
+  ![alt text](https://github.com/ecetiner87/clouderainstallation_ansible/blob/master/snapshots/Screenshot%20from%202018-11-20%2011-44-03.png)
+        
 9) Finalize Cluster Setup  
+
+ ![alt text](https://github.com/ecetiner87/clouderainstallation_ansible/blob/master/snapshots/Screenshot%20from%202018-11-20%2011-35-47.png)
 
 10) You can control your cluster dashboard now.
 
+ ![alt text](https://github.com/ecetiner87/clouderainstallation_ansible/blob/master/snapshots/Screenshot%20from%202018-11-20%2011-49-16.png)
 
 ## Built With
 
