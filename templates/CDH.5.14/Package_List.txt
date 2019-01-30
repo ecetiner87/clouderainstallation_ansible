@@ -1,5 +1,5 @@
-CDH5.14 packages
-
+Download following CDH5.14 packages and locate them under /etc/ansible/templates/CDH.5.14 folder
+ 
 cloudera-manager-agent-5.14.3-1.cm5143.p0.4.el7.x86_64
 cloudera-manager-daemons-5.14.3-1.cm5143.p0.4.el7.x86_64
 cloudera-manager-server-5.14.3-1.cm5143.p0.4.el7.x86_64
