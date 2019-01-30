@@ -1,0 +1,5 @@
+Download following parcel file and locate it under /etc/ansible/templates/CDH.5.14 folder
+
+CDH-5.14.2-1.cdh5.14.2.p0.3-el7.parcel
+
+Download Link: https://archive.cloudera.com/cdh5/parcels/5.14.2/
