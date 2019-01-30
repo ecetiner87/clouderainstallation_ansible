@@ -197,46 +197,47 @@ ansible-playbook clouderaserverinstall.yml
 
 **Execution Demo:**
 
-1) Run related script from the path where you copied it. Use tee command to see related ansible output and to log them in a          file.
+**1)** Run related script from the path where you copied it. Use tee command to see related ansible output and to log them in a          file.
 ```
 $ ./install_cloudera.sh | tee “install_cloudera.log”
 ```
 
    ![alt text](https://github.com/ecetiner87/clouderainstallation_ansible/blob/master/snapshots/3.png)
 
-2) After script execution finished; check the related log file too see if you have any error. Some errors and warnings have “ignoring...” tag; you can skip them.
+**2)** After script execution finished; check the related log file too see if you have any error. Some errors and warnings have “ignoring...” tag; you can skip them.
 
-3) If you haven’t any error in log file (other than “ignoring” ones) you should login cloudera manager from GUI successfully with URL https://cloudera-managerIP:7180
+**3)** If you haven’t any error in log file (other than “ignoring” ones) you should login cloudera manager from GUI successfully with URL https://cloudera-managerIP:7180
 
   ![alt text](https://github.com/ecetiner87/clouderainstallation_ansible/blob/master/snapshots/Screenshot%20from%202018-11-20%2011-15-23.png)
 
 
-4) Login with admin/admin user/pass configuration
+**4)** Login with admin/admin user/pass configuration
 
-5) Continue with express-wizard and verify that Cloudera Manager find all nodes that you supply in your /etc/hosts file.
+**5)** Continue with express-wizard and verify that Cloudera Manager find all nodes that you supply in your /etc/hosts file.
   
   ![alt text](https://github.com/ecetiner87/clouderainstallation_ansible/blob/master/snapshots/Screenshot%20from%202018-11-20%2011-16-28.png)
 
 
-6) Enter local repo URLs to Cloudera Manager as Repository to point your own parcel files that you created via ansible.
-        ◦ For CDH: REPO_IP/CDH.5.14/CDH.5.14
-        ◦ For KAFKA: REPO_IP/KAFKA/KAFKA
+**6)** Enter local repo URLs to Cloudera Manager as Repository to point your own parcel files that you created via ansible.
+            
+            ◦ For CDH: REPO_IP/CDH.5.14/CDH.5.14
+            ◦ For KAFKA: REPO_IP/KAFKA/KAFKA
         
-7) Install Agents and verify all nodes installed successfully.
+**7)** Install Agents and verify all nodes installed successfully.
 
   ![alt text](https://github.com/ecetiner87/clouderainstallation_ansible/blob/master/snapshots/Screenshot%20from%202018-11-20%2011-23-41.png)
 
-8) Setup Databases for hive/oozie/hue as following:
+**8)** Setup Databases for hive/oozie/hue as following:
         ◦ Database Type: MySQL; 
         ◦ Database Name/User: hue/oozie/hue     hue/oozie/hue 
         
   ![alt text](https://github.com/ecetiner87/clouderainstallation_ansible/blob/master/snapshots/Screenshot%20from%202018-11-20%2011-44-03.png)
         
-9) Finalize Cluster Setup  
+**9)** Finalize Cluster Setup  
 
  ![alt text](https://github.com/ecetiner87/clouderainstallation_ansible/blob/master/snapshots/Screenshot%20from%202018-11-20%2011-35-47.png)
 
-10) You can control your cluster dashboard now.
+**10)** You can control your cluster dashboard now.
 
  ![alt text](https://github.com/ecetiner87/clouderainstallation_ansible/blob/master/snapshots/Screenshot%20from%202018-11-20%2011-49-16.png)
 
