@@ -32,6 +32,8 @@ Cloudera Manager is an end-to-end application for managing CDH clusters. Clouder
             ▪ cloudera-manager: Host where related cloudera-server packages will be installed
             ▪ dbserver: Host where config db -mysql- will be installed. (Mostly same host with cloudera-manager)
             ▪ cloudera-hosts: Hosts where cloudera-client packages will be installed.
+            
+            ![alt text](https://github.com/ecetiner87/clouderainstallation_ansible/blob/master/snapshots/1.png)
 
 * You should ssh each host once with defined ansible_user(which is root in our case) in your hosts file to create **ssh key** between ansible control machine and related ansible targets. You can also try **ssh key-gen** for each target.
 
