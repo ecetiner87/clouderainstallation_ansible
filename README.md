@@ -251,7 +251,7 @@ $ ./install_cloudera.sh | tee “install_cloudera.log”
 
 ## Authors
 
-* **Erkan Cetiner** - *Initial work* - [ecetiner87](https://github.com/ecetiner87)
+* **Erkan Cetiner**  - [ecetiner87](https://github.com/ecetiner87)
 
 
 ## License
